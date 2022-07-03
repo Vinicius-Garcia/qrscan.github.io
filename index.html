@@ -1,31 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <h1>Aqui</h1>
-  <video id="webcan"></video>
-  <script src="instascan.min.js"></script>
-<script>
-  const scanner = new Instascan.Scanner({
-    video: document.getElementById('webcan')
-  });
-  scanner.addListener('scan', function (content) {
-    console.log(content);
-  });
-  Instascan.Camera.getCameras().then(function (cameras) {
-    if (cameras.length > 0) {
-      scanner.start(cameras[0]);
-    } else {
-      console.error('No cameras found.');
-    }
-  }).catch(function (e) {
-    console.error(e);
-  });
-</script>
-</body>
+<html>
+  <head>
+    <title>QRCode Scanner</title>
+    <script type="text/javascript" src="instascan.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="container">
+      <video id="preview"></video>
+      <input class="resultado" placeholder="Aqui saira o resultado do qrcode" ></input>
+    </div>
+
+    
+ 
+    
+    <script type="text/javascript">
+      let scanner = new Instascan.Scanner({
+        continuous: true,
+        video: document.getElementById('preview'),
+        mirror: false
+      });
+
+      scanner.addListener('scan', function (content) {
+        console.log(content);
+      });
+
+      Instascan.Camera.getCameras().then(function (cameras) {
+        if (cameras.length > 0) {
+          scanner.start(cameras[cameras.length-1]);
+          scanner.addListener('scan', function(content) {
+            document.querySelector('.resultado').value = content;
+            if(content != null){
+              scanner.stop();
+            }
+          });
+
+        } else {
+          console.error('No cameras found.');
+        }
+      }).catch(function (e) {
+        console.error(e);
+      });
+    </script>
+  </body>
 </html>
